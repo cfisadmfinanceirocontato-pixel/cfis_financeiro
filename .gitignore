@@ -1,0 +1,19 @@
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# Environment
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Data temp
+data/temp/
+data/backups/
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
