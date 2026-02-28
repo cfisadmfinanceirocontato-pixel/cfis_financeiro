@@ -1,42 +1,49 @@
 """
-MAIN - Ponto de entrada da aplicação (versão compatível com Streamlit antigo)
+MAIN - Ponto de entrada da aplicação
+CORRIGIDO: set_page_config é o primeiro comando
 """
 import streamlit as st
 
-# Configuração da página (DEVE ser a primeira linha)
+# ⚠️ PRIMEIRÍSSIMA COISA: configurar a página
 st.set_page_config(
     page_title="CFIS Financeiro",
     page_icon="💰",
     layout="wide"
 )
 
+# ✅ AGORA SIM: outros imports
 import os
 from pathlib import Path
 
-
-st.write(f"Versão do Streamlit: {st.__version__}")
-
-
+# Tentativa de importar MongoDB (com try/except para evitar erros)
+try:
+    from src.database import MongoDB
+    mongodb_disponivel = True
+except Exception as e:
+    mongodb_disponivel = False
+    print(f"Erro ao importar MongoDB: {e}")
 
 # Título na sidebar
 st.sidebar.title("💰 CFIS Financeiro")
 
-# Verifica conexão MongoDB (opcional)
-try:
-    from src.database import MongoDB
-    sucesso, mensagem = MongoDB.testar_conexao()
-    if sucesso:
-        st.sidebar.success("✅ MongoDB conectado")
-    else:
-        st.sidebar.error(f"❌ MongoDB: {mensagem}")
-except Exception as e:
-    st.sidebar.warning("⚠️ MongoDB não disponível (use app_teste.py para testar)")
+# Verifica conexão MongoDB
+with st.sidebar:
+    try:
+        if mongodb_disponivel:
+            sucesso, mensagem = MongoDB.testar_conexao()
+            if sucesso:
+                st.success("✅ MongoDB conectado")
+            else:
+                st.error(f"❌ MongoDB: {mensagem}")
+        else:
+            st.warning("⚠️ MongoDB não disponível")
+    except Exception as e:
+        st.warning("⚠️ Erro na conexão")
 
-# Definição das páginas no formato ANTIGO (sem st.Page)
+# Menu de navegação
 st.sidebar.markdown("---")
 st.sidebar.markdown("### 📋 Navegação")
 
-# Usando radio buttons para navegação (funciona em qualquer versão)
 opcao = st.sidebar.radio(
     "Ir para:",
     ["🏠 Home", 
@@ -48,73 +55,58 @@ opcao = st.sidebar.radio(
 
 # Carrega a página correspondente
 if opcao == "🏠 Home":
+    st.title("🏠 Home")
     try:
         from pages.home import main as home_main
         home_main()
     except:
-        st.title("🏠 Home")
-        st.write("Página Home em construção")
-        
+        st.info("Página Home em construção")
+
 elif opcao == "📋 Cadastros":
     st.title("📋 Cadastros")
     tab1, tab2, tab3 = st.tabs(["Instrumentos", "Fornecedores", "Funcionários"])
     
     with tab1:
-        st.write("Cadastro de Instrumentos")
-        # Tenta importar se existir
         try:
-            from pages.cadastros.cadastrosinstrumentos import main as inst_main
-            inst_main()
+            from pages.cadastros.cadastrosinstrumentos import main
+            main()
         except:
-            st.info("Módulo de instrumentos em construção")
+            st.info("Instrumentos em construção")
     
     with tab2:
-        st.write("Cadastro de Fornecedores")
         try:
-            from pages.cadastros.pgfornecedores import main as forn_main
-            forn_main()
+            from pages.cadastros.pgfornecedores import main
+            main()
         except:
-            st.info("Módulo de fornecedores em construção")
+            st.info("Fornecedores em construção")
     
     with tab3:
-        st.write("Cadastro de Funcionários")
         try:
-            from pages.cadastros.pgfuncionarios import main as func_main
-            func_main()
+            from pages.cadastros.pgfuncionarios import main
+            main()
         except:
-            st.info("Módulo de funcionários em construção")
-            
+            st.info("Funcionários em construção")
+
 elif opcao == "💰 Diárias":
     st.title("💰 Diárias")
-    tab1, tab2 = st.tabs(["Recibos", "Pagamentos"])
-    
-    with tab1:
-        try:
-            from pages.diarias.pgdiarias import main as diarias_main
-            diarias_main()
-        except:
-            st.info("Módulo de recibos em construção")
-    
-    with tab2:
-        try:
-            from pages.diarias.pgpgtodiarias import main as pgto_main
-            pgto_main()
-        except:
-            st.info("Módulo de pagamentos em construção")
-            
+    try:
+        from pages.diarias.pgdiarias import main
+        main()
+    except:
+        st.info("Módulo de diárias em construção")
+
 elif opcao == "📊 Provisionamento":
     st.title("📊 Provisionamento")
     try:
-        from pages.provisionamento.pgprovisionamentocd import main as prov_main
-        prov_main()
+        from pages.provisionamento.pgprovisionamentocd import main
+        main()
     except:
-        st.info("Módulo de provisionamento em construção")
-        
+        st.info("Provisionamento em construção")
+
 elif opcao == "🔧 Teste":
     st.title("🔧 Página de Teste")
-    st.write("### Informações do Sistema:")
-    st.write(f"- Python: {os.sys.version}")
-    st.write(f"- Streamlit: {st.__version__}")
+    st.write(f"**Streamlit:** {st.__version__}")
+    st.write(f"**Python:** {os.sys.version}")
     
     try:
         import pymongo
