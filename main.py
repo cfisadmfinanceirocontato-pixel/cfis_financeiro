@@ -5,9 +5,7 @@ MAIN - Ponto de entrada da aplicação
 """
 
 import streamlit as st
-
 import os
-
 from src.database import MongoDB
 
 
