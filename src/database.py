@@ -1,27 +1,3 @@
-"""
-
-DATABASE - Módulo central de banco de dados MongoDB
-
-"""
-
-import streamlit as st
-
-from pymongo import MongoClient
-
-import pandas as pd
-
-from datetime import datetime
-
-import os
-
-from dotenv import load_dotenv
-
-
-
-load_dotenv()
-
-
-
 # src/database.py (VERSÃO CORRIGIDA)
 """
 DATABASE - Módulo central de banco de dados MongoDB

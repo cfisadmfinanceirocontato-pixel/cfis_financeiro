@@ -2,11 +2,6 @@
 MAIN - Ponto de entrada da aplicação (versão compatível com Streamlit antigo)
 """
 import streamlit as st
-import os
-from pathlib import Path
-
-
-st.write(f"Versão do Streamlit: {st.__version__}")
 
 # Configuração da página (DEVE ser a primeira linha)
 st.set_page_config(
@@ -14,6 +9,14 @@ st.set_page_config(
     page_icon="💰",
     layout="wide"
 )
+
+import os
+from pathlib import Path
+
+
+st.write(f"Versão do Streamlit: {st.__version__}")
+
+
 
 # Título na sidebar
 st.sidebar.title("💰 CFIS Financeiro")
