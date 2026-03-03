@@ -1407,7 +1407,7 @@ if template_path and os.path.exists(template_path):
         pass
 
 # ============================================================================
-# RODAPÉ
+# RODAPÉ teste
 # ============================================================================
 st.markdown("---")
 st.caption(f"📁 **Pasta:** {pasta_recibos_manual}")
